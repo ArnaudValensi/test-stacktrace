@@ -1,9 +1,13 @@
 #!/bin/bash
 
 set -x
+set -e
 
-rm -fr *.o main main.exe
-g++.exe -g -c backward.cpp
-g++.exe -g -c main.cpp
-g++.exe -o main *.o -mconsole -lmsvcr90 -ldbghelp -lpsapi 
+COMPILER=clang++.exe
+
+rm -fr *.o main main.exe main.pdb
+$COMPILER -g -gcodeview -c backward.cpp
+$COMPILER -g -gcodeview -c main.cpp
+$COMPILER -o main *.o -ldbghelp -lucrt -Wl,--pdb= -fuse-ld=lld
+
 ./main.exe
